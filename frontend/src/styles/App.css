@@ -103,8 +103,6 @@ a:focus {
     text-decoration: underline;
 }
 
-/* მთავარი გვერდი */
-
 .hero {
     min-height: 430px;
     padding: 58px;
@@ -200,8 +198,6 @@ a:focus {
     line-height: 1.6;
 }
 
-/* გვერდის სათაური */
-
 .page-heading {
     margin-bottom: 30px;
     display: flex;
@@ -223,8 +219,6 @@ a:focus {
     margin-bottom: 0;
     color: #68707c;
 }
-
-/* ფილტრები */
 
 .filters,
 .order-filters {
@@ -312,8 +306,6 @@ a:focus {
     margin-left: 8px;
     font-weight: 600;
 }
-
-/* პროდუქტების სია */
 
 .product-grid {
     display: grid;
@@ -456,8 +448,6 @@ a:focus {
     cursor: pointer;
 }
 
-/* პროდუქტის დეტალური გვერდი */
-
 .back-link {
     display: inline-block;
     margin-bottom: 24px;
@@ -534,8 +524,6 @@ a:focus {
     cursor: pointer;
 }
 
-/* პროდუქტის და შეკვეთის ფორმები */
-
 .form-page,
 .checkout-page {
     display: grid;
@@ -581,8 +569,6 @@ a:focus {
     font-weight: 600;
     text-decoration: none;
 }
-
-/* კალათა */
 
 .cart-layout {
     display: grid;
@@ -734,8 +720,6 @@ a:focus {
     color: #68707c;
 }
 
-/* შეკვეთები */
-
 .checkout-total {
     margin-top: 25px;
     padding: 16px;
@@ -849,8 +833,6 @@ a:focus {
     font-size: 20px;
 }
 
-/* სხვა გვერდები */
-
 .not-found {
     min-height: 500px;
     display: flex;
@@ -905,8 +887,6 @@ a:focus {
     text-align: right;
 }
 
-/* ტაბლეტი */
-
 @media (max-width: 900px) {
     .hero {
         padding: 40px;
@@ -932,8 +912,6 @@ a:focus {
         position: static;
     }
 }
-
-/* მობილური */
 
 @media (max-width: 640px) {
     .home-page,
