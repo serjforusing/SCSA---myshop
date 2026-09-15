@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 
@@ -10,9 +10,13 @@ function EditProduct() {
     const [category,setCategory] = useState("")
     const [stock,setStock] = useState("")
     const [image,setImage] = useState(null)
+    const [imageUrl,setImageUrl] = useState("")
+    const [existingImage,setExistingImage] = useState("")
+    const [removeImage,setRemoveImage] = useState(false)
     const [categories,setCategories] = useState([])
     const [error,setError] = useState("")
     const [loading,setLoading] = useState(true)
+    const fileInput = useRef(null)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -23,6 +27,8 @@ function EditProduct() {
             setDescription(response.data.description)
             setCategory(response.data.category)
             setStock(response.data.stock)
+            setImageUrl(response.data.image_url || "")
+            setExistingImage(response.data.image_url || response.data.image || "")
         }
 
         async function getCategories() {
@@ -41,8 +47,9 @@ function EditProduct() {
         setLoading(true)
         try {
             const data = new FormData()
-            Object.entries({ name, price, description, category, stock }).forEach(([key, value]) => data.append(key, value))
+            Object.entries({ name, price, description, category, stock, image_url: imageUrl }).forEach(([key, value]) => data.append(key, value))
             if (image) data.append("image", image)
+            if (removeImage) data.append("remove_image", "true")
             await api.put(`/api/product/${id}/`, data)
             navigate(`/products/${id}`)
         } catch (error) {
@@ -63,7 +70,9 @@ function EditProduct() {
             </div>
             <form className="product-form" onSubmit={handleSubmit}>
                 <label className="field-wide" htmlFor="product-name"><span>პროდუქტის სახელი</span><input id="product-name" type="text" value={name} onChange={(e) => setName(e.target.value)} required /></label>
-                <label className="field-wide image-field" htmlFor="product-image"><span>ახალი სურათი <small>არასავალდებულო</small></span><input id="product-image" type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0] || null)} /></label>
+                {(existingImage || image || imageUrl) && !removeImage && <div className="current-image field-wide">{(imageUrl || existingImage) && <img src={imageUrl || existingImage} alt={name} />}<button type="button" onClick={() => { setExistingImage(""); setImage(null); setImageUrl(""); setRemoveImage(true); fileInput.current.value = "" }}>სურათის წაშლა</button></div>}
+                <label className="field-wide image-field" htmlFor="product-image"><span>ახალი სურათის ფაილი <small>არასავალდებულო</small></span><input ref={fileInput} id="product-image" type="file" accept="image/*" onChange={(e) => { setImage(e.target.files[0] || null); if (e.target.files[0]) { setImageUrl(""); setRemoveImage(false) } }} /></label>
+                <label className="field-wide" htmlFor="product-image-url"><span>ან სურათის ინტერნეტ-ლინკი</span><input id="product-image-url" type="url" value={imageUrl} onChange={(e) => { setImageUrl(e.target.value); if (e.target.value) { setImage(null); setRemoveImage(false); fileInput.current.value = "" } }} placeholder="https://example.com/photo.jpg" /></label>
                 <label htmlFor="product-price"><span>ფასი, ₾</span><input id="product-price" type="number" min="0.01" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required /></label>
                 <label htmlFor="product-stock"><span>რაოდენობა</span><input id="product-stock" type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} required /></label>
                 <label className="field-wide" htmlFor="product-category"><span>კატეგორია</span><select id="product-category" value={category} onChange={(e) => setCategory(e.target.value)} required><option value="">აირჩიე კატეგორია</option>{categories.map((item)=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>

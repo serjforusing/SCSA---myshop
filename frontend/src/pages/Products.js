@@ -116,7 +116,7 @@ function Products(){
             <div className="product-grid">
                 {products.map((product) => (
                     <article className="product-card" key={product.id}>
-                        {product.image && <button className="image-open-button product-image-button" type="button" onClick={() => setPreview(product)} aria-label={`${product.name} — სურათის სრულად ნახვა`}><img className="product-image" src={product.image} alt={product.name} loading="lazy" /></button>}
+                        {(product.image_url || product.image) && <button className="image-open-button product-image-button" type="button" onClick={() => setPreview(product)} aria-label={`${product.name} — სურათის სრულად ნახვა`}><img className="product-image" src={product.image_url || product.image} alt={product.name} loading="lazy" /></button>}
                         <div className="product-card-top">
                             <span className="category-label">{product.category_name}</span>
                         </div>
@@ -149,7 +149,7 @@ function Products(){
                     <button disabled={!next} onClick={() => setPage((value) => value + 1)}>შემდეგი →</button>
                 </div>
             )}
-            <ImageModal src={preview?.image} alt={preview?.name} onClose={() => setPreview(null)} />
+            <ImageModal src={preview?.image_url || preview?.image} alt={preview?.name} onClose={() => setPreview(null)} />
         </main>
     );
 }

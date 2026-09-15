@@ -5,10 +5,11 @@ class ProductSerializer(serializers.ModelSerializer):
     owner = serializers.CharField(source='owner.username', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
     is_owner = serializers.SerializerMethodField()
+    remove_image = serializers.BooleanField(write_only=True, required=False)
 
     class Meta:
         model = Product
-        fields = ['id', 'owner', 'is_owner', 'name', 'price', 'description', 'category', 'category_name', 'created_at', 'updated_at', 'stock', 'image']
+        fields = ['id', 'owner', 'is_owner', 'name', 'price', 'description', 'category', 'category_name', 'created_at', 'updated_at', 'stock', 'image', 'image_url', 'remove_image']
         read_only_fields = ['owner', 'created_at', 'updated_at']
 
     def get_is_owner(self, product) -> bool:
@@ -24,6 +25,30 @@ class ProductSerializer(serializers.ModelSerializer):
         if value.size > 5 * 1024 * 1024:
             raise serializers.ValidationError('სურათი არ უნდა აღემატებოდეს 5 MB-ს.')
         return value
+
+    def validate_image_url(self, value):
+        if value and not value.startswith('https://'):
+            raise serializers.ValidationError('სურათის ლინკი უნდა იწყებოდეს https://-ით.')
+        return value
+
+    def validate(self, attrs):
+        if attrs.get('image') and attrs.get('image_url'):
+            raise serializers.ValidationError('აირჩიე სურათის ფაილი ან ლინკი.')
+        return attrs
+
+    def create(self, validated_data):
+        validated_data.pop('remove_image', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        remove_image = validated_data.pop('remove_image', False)
+        if remove_image or validated_data.get('image') or validated_data.get('image_url'):
+            instance.image.delete(save=False)
+        if remove_image:
+            validated_data.update(image=None, image_url='')
+        elif validated_data.get('image'):
+            validated_data['image_url'] = ''
+        return super().update(instance, validated_data)
 
 
 class CategorySerializer(serializers.ModelSerializer):

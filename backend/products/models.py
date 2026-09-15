@@ -13,6 +13,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     stock = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
+    image_url = models.URLField(blank=True, max_length=1000)
 
     def __str__(self):
         return self.name

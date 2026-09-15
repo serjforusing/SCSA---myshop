@@ -630,6 +630,28 @@ a:focus {
     padding: 8px;
 }
 
+.current-image {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.current-image img {
+    width: 96px;
+    height: 64px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.current-image button {
+    padding: 9px 12px;
+    border: 1px solid #d9aaaa;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #b33a3a;
+    cursor: pointer;
+}
+
 .field-wide {
     grid-column: 1 / -1;
 }

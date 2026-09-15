@@ -47,12 +47,13 @@ function ProductDetails() {
 
     if (error) return <main className="simple-page"><p className="notice error-message" role="alert">{error}</p><Link to="/products">← პროდუქტებზე დაბრუნება</Link></main>;
     if (!product) return <main className="simple-page"><p className="notice">იტვირთება...</p></main>;
+    const productImage = product.image_url || product.image;
 
     return (
         <main className="detail-page">
             <Link className="back-link" to="/products">← პროდუქტებზე დაბრუნება</Link>
             <article className="product-detail">
-                {product.image ? <button className="image-open-button detail-image-button" type="button" onClick={() => setPreview(true)} aria-label={`${product.name} — სურათის სრულად ნახვა`}><img className="detail-image" src={product.image} alt={product.name} /></button> : <div className="detail-number" aria-hidden="true">{product.name.charAt(0)}</div>}
+                {productImage ? <button className="image-open-button detail-image-button" type="button" onClick={() => setPreview(true)} aria-label={`${product.name} — სურათის სრულად ნახვა`}><img className="detail-image" src={productImage} alt={product.name} /></button> : <div className="detail-number" aria-hidden="true">{product.name.charAt(0)}</div>}
                 <div className="detail-content">
                     <p className="eyebrow">{product.category_name}</p>
                     <h1>{product.name}</h1>
@@ -75,7 +76,7 @@ function ProductDetails() {
                     )}
                 </div>
             </article>
-            <ImageModal src={preview ? product.image : null} alt={product.name} onClose={() => setPreview(false)} />
+            <ImageModal src={preview ? productImage : null} alt={product.name} onClose={() => setPreview(false)} />
         </main>
     );
 }

@@ -48,6 +48,23 @@ class ProductApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("/media/products/", response.data["image"])
 
+    def test_product_image_url_can_be_added_and_removed(self):
+        self.client.force_authenticate(self.owner)
+        data = {
+            "name": self.product.name, "price": self.product.price,
+            "description": self.product.description, "category": self.category.id,
+            "stock": self.product.stock, "image_url": "https://example.com/product.jpg",
+        }
+        response = self.client.put(reverse("product_detail", args=[self.product.id]), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["image_url"], data["image_url"])
+
+        data.update(image_url="", remove_image=True)
+        response = self.client.put(reverse("product_detail", args=[self.product.id]), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["image_url"], "")
+        self.assertIsNone(response.data["image"])
+
     def test_search_filter_order_and_pagination(self):
         response = self.client.get(reverse("product_list"), {
             "search": "Python", "category": self.category.id, "ordering": "price",
