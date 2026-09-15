@@ -562,6 +562,23 @@ a:focus {
     resize: vertical;
 }
 
+.product-form .image-field {
+    padding: 16px;
+    border: 1px dashed #9eabb8;
+    border-radius: 8px;
+    background-color: #f7f9fb;
+}
+
+.image-field small {
+    margin-left: 6px;
+    color: #68707c;
+    font-weight: 400;
+}
+
+.product-form .image-field input {
+    padding: 8px;
+}
+
 .field-wide {
     grid-column: 1 / -1;
 }
