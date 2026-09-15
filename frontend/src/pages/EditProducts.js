@@ -9,6 +9,7 @@ function EditProduct() {
     const [description,setDescription] = useState("")
     const [category,setCategory] = useState("")
     const [stock,setStock] = useState("")
+    const [image,setImage] = useState(null)
     const [categories,setCategories] = useState([])
     const [error,setError] = useState("")
     const [loading,setLoading] = useState(true)
@@ -39,7 +40,10 @@ function EditProduct() {
         setError("")
         setLoading(true)
         try {
-            await api.put(`/api/product/${id}/`, { name, price, description, category, stock })
+            const data = new FormData()
+            Object.entries({ name, price, description, category, stock }).forEach(([key, value]) => data.append(key, value))
+            if (image) data.append("image", image)
+            await api.put(`/api/product/${id}/`, data)
             navigate(`/products/${id}`)
         } catch (error) {
             setError(error.response?.status === 403 ? "ამ პროდუქტის შეცვლის უფლება არ გაქვს." : "პროდუქტის შენახვა ვერ შესრულდა.")
@@ -62,6 +66,7 @@ function EditProduct() {
                 <label htmlFor="product-price"><span>ფასი, ₾</span><input id="product-price" type="number" min="0.01" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required /></label>
                 <label htmlFor="product-stock"><span>რაოდენობა</span><input id="product-stock" type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} required /></label>
                 <label className="field-wide" htmlFor="product-category"><span>კატეგორია</span><select id="product-category" value={category} onChange={(e) => setCategory(e.target.value)} required><option value="">აირჩიე კატეგორია</option>{categories.map((item)=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <label className="field-wide" htmlFor="product-image"><span>ახალი სურათი (მაქს. 5 MB)</span><input id="product-image" type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0] || null)} /></label>
                 <label className="field-wide" htmlFor="product-description"><span>აღწერა</span><textarea id="product-description" value={description} onChange={(e) => setDescription(e.target.value)} required /></label>
                 {error && <p className="form-error field-wide" role="alert">{error}</p>}
                 <div className="form-actions field-wide">

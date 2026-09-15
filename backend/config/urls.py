@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.conf import settings
 from django.urls import include, path
+from django.views.static import serve
 from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -10,4 +12,6 @@ urlpatterns = [
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("", include("products.urls")),
     path("", include("users.urls")),
+    # ponytail: app-served media suits this demo; use object storage when uploads must survive redeploys.
+    path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT}),
 ]

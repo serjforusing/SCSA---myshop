@@ -50,7 +50,7 @@ function ProductDetails() {
         <main className="detail-page">
             <Link className="back-link" to="/products">← პროდუქტებზე დაბრუნება</Link>
             <article className="product-detail">
-                <div className="detail-number" aria-hidden="true">{product.name.charAt(0)}</div>
+                {product.image ? <img className="detail-image" src={product.image} alt={product.name} /> : <div className="detail-number" aria-hidden="true">{product.name.charAt(0)}</div>}
                 <div className="detail-content">
                     <p className="eyebrow">{product.category_name}</p>
                     <h1>{product.name}</h1>

@@ -330,6 +330,15 @@ a:focus {
     box-shadow: 0 5px 14px rgba(30, 40, 50, 0.07);
 }
 
+.product-image {
+    width: calc(100% + 40px);
+    height: 180px;
+    margin: -20px -20px 18px;
+    display: block;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
 .category-label {
     display: inline-block;
     padding: 5px 9px;
@@ -470,6 +479,12 @@ a:focus {
     color: #7890a6;
     font-size: 110px;
     font-weight: 600;
+}
+
+.detail-image {
+    width: 100%;
+    min-height: 440px;
+    object-fit: cover;
 }
 
 .detail-content {
@@ -971,6 +986,11 @@ a:focus {
     .detail-number {
         min-height: 170px;
         font-size: 70px;
+    }
+
+    .detail-image {
+        height: 220px;
+        min-height: 0;
     }
 
     .detail-content,

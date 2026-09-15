@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -32,6 +33,20 @@ class ProductApiTests(APITestCase):
         self.client.force_authenticate(self.other_user)
         response = self.client.delete(reverse("product_detail", args=[self.product.id]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_product_image_upload(self):
+        self.client.force_authenticate(self.owner)
+        image = SimpleUploadedFile(
+            "product.gif",
+            b"GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;",
+            content_type="image/gif",
+        )
+        response = self.client.post(reverse("product_list"), {
+            "name": "Camera", "price": "100.00", "description": "Digital camera",
+            "category": self.category.id, "stock": 1, "image": image,
+        }, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn("/media/products/", response.data["image"])
 
     def test_search_filter_order_and_pagination(self):
         response = self.client.get(reverse("product_list"), {

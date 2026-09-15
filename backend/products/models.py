@@ -12,6 +12,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     stock = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to="products/", blank=True, null=True)
 
     def __str__(self):
         return self.name

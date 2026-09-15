@@ -8,7 +8,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'owner', 'is_owner', 'name', 'price', 'description', 'category', 'category_name', 'created_at', 'updated_at', 'stock']
+        fields = ['id', 'owner', 'is_owner', 'name', 'price', 'description', 'category', 'category_name', 'created_at', 'updated_at', 'stock', 'image']
         read_only_fields = ['owner', 'created_at', 'updated_at']
 
     def get_is_owner(self, product) -> bool:
@@ -18,6 +18,11 @@ class ProductSerializer(serializers.ModelSerializer):
     def validate_price(self, value):
         if value <= 0:
             raise serializers.ValidationError('ფასი უნდა იყოს ნულზე მეტი.')
+        return value
+
+    def validate_image(self, value):
+        if value.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError('სურათი არ უნდა აღემატებოდეს 5 MB-ს.')
         return value
 
 

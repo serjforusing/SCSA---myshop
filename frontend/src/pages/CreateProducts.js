@@ -8,6 +8,7 @@ function CreateProducts(){
     const [description,setDescription] = useState("")
     const [category,setCategory] = useState("")
     const [stock,setStock] = useState("")
+    const [image,setImage] = useState(null)
     const [categories,setCategories] = useState([])
     const [error,setError] = useState("")
     const [loading,setLoading] = useState(false)
@@ -24,7 +25,10 @@ function CreateProducts(){
         setError("")
         setLoading(true)
         try {
-            await api.post("/api/product/", { name, price, description, category, stock })
+            const data = new FormData()
+            Object.entries({ name, price, description, category, stock }).forEach(([key, value]) => data.append(key, value))
+            if (image) data.append("image", image)
+            await api.post("/api/product/", data)
             navigate("/products")
         } catch (error) {
             setError("პროდუქტის შექმნა ვერ შესრულდა. შეამოწმე ველები.")
@@ -45,6 +49,7 @@ function CreateProducts(){
                 <label htmlFor="product-price"><span>ფასი, ₾</span><input id="product-price" type="number" min="0.01" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" required /></label>
                 <label htmlFor="product-stock"><span>რაოდენობა</span><input id="product-stock" type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="0" required /></label>
                 <label className="field-wide" htmlFor="product-category"><span>კატეგორია</span><select id="product-category" value={category} onChange={(e)=>setCategory(e.target.value)} required><option value="">აირჩიე კატეგორია</option>{categories.map((item)=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <label className="field-wide" htmlFor="product-image"><span>სურათი (მაქს. 5 MB)</span><input id="product-image" type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0] || null)} /></label>
                 <label className="field-wide" htmlFor="product-description"><span>აღწერა</span><textarea id="product-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="მოკლედ აღწერე პროდუქტი" required /></label>
                 {error && <p className="form-error field-wide" role="alert">{error}</p>}
                 <div className="form-actions field-wide">
