@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
+import ImageModal from "../components/ImageModal";
 
 function ProductDetails() {
     const { id } = useParams();
@@ -11,6 +12,7 @@ function ProductDetails() {
     const [cartMessage, setCartMessage] = useState("");
     const [cartError, setCartError] = useState("");
     const [adding, setAdding] = useState(false);
+    const [preview, setPreview] = useState(false);
     const { isAuthenticated } = useContext(AuthContext);
 
     useEffect(() => {
@@ -50,7 +52,7 @@ function ProductDetails() {
         <main className="detail-page">
             <Link className="back-link" to="/products">← პროდუქტებზე დაბრუნება</Link>
             <article className="product-detail">
-                {product.image ? <img className="detail-image" src={product.image} alt={product.name} /> : <div className="detail-number" aria-hidden="true">{product.name.charAt(0)}</div>}
+                {product.image ? <button className="image-open-button detail-image-button" type="button" onClick={() => setPreview(true)} aria-label={`${product.name} — სურათის სრულად ნახვა`}><img className="detail-image" src={product.image} alt={product.name} /></button> : <div className="detail-number" aria-hidden="true">{product.name.charAt(0)}</div>}
                 <div className="detail-content">
                     <p className="eyebrow">{product.category_name}</p>
                     <h1>{product.name}</h1>
@@ -73,6 +75,7 @@ function ProductDetails() {
                     )}
                 </div>
             </article>
+            <ImageModal src={preview ? product.image : null} alt={product.name} onClose={() => setPreview(false)} />
         </main>
     );
 }

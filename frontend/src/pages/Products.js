@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
+import ImageModal from "../components/ImageModal";
 
 function Products(){
     const { isAuthenticated } = useContext(AuthContext)
@@ -18,6 +19,7 @@ function Products(){
     const [reload,setReload] = useState(0)
     const [addingId,setAddingId] = useState(null)
     const [cartMessage,setCartMessage] = useState("")
+    const [preview,setPreview] = useState(null)
 
     useEffect(() => {
         api.get("/api/category/")
@@ -114,7 +116,7 @@ function Products(){
             <div className="product-grid">
                 {products.map((product) => (
                     <article className="product-card" key={product.id}>
-                        {product.image && <Link to={`/products/${product.id}`}><img className="product-image" src={product.image} alt={product.name} loading="lazy" /></Link>}
+                        {product.image && <button className="image-open-button product-image-button" type="button" onClick={() => setPreview(product)} aria-label={`${product.name} — სურათის სრულად ნახვა`}><img className="product-image" src={product.image} alt={product.name} loading="lazy" /></button>}
                         <div className="product-card-top">
                             <span className="category-label">{product.category_name}</span>
                         </div>
@@ -147,6 +149,7 @@ function Products(){
                     <button disabled={!next} onClick={() => setPage((value) => value + 1)}>შემდეგი →</button>
                 </div>
             )}
+            <ImageModal src={preview?.image} alt={preview?.name} onClose={() => setPreview(null)} />
         </main>
     );
 }
